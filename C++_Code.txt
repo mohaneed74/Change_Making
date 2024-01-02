@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+// Function to find the minimum number of coins needed to make change for amount n
+int minCoins(vector<int>& D, int n, int m) {
+
+    //initialize Array with unknown size using vector
+    //F[i] represents the minimum number of coins needed to make change for amount i
+    vector<int> F(n + 1);
+    //initialize first element with 0 because if the amount was 0, then we can't represent it by any coin 
+    F[0] = 0;
+    for (int i = 1; i <= n; ++i) {
+        //INT_MAX is a command in c++ that refers to very huge number, instead of infinity
+        //you can learn more about it using this link: https://www.geeksforgeeks.org/int_max-int_min-cc-applications/
+        int temp = INT_MAX;
+        int j = 0;
+
+        //Iterate through coin denominations
+        while (j < m && i >= D[j]) {
+            //Update temp with the minimum number of coins needed for the current amount
+            if (F[i - D[j]] < temp)
+            {
+                temp = F[i - D[j]];
+            }
+            j++;
+        }
+
+        //Update F[i] with the minimum number of coins needed for the current amount
+        //the 1 refers to the coin i will consider + the minimum number of coins that represent (the amount - the value of the coin that will be taken)
+        F[i] = temp + 1;
+    }
+
+    //Return the minimum number of coins needed for the target amount
+    return F[n];
+}
+
+int main() {
+    int numCoins;
+
+    // Get the number of coin denominations from the user
+    cout << "Enter the number of coin denominations: ";
+    cin >> numCoins;
+
+    //initialize Array with unknown size using vector
+    //you can learn more about vector in c++ using this link: https://learn.microsoft.com/en-us/cpp/standard-library/vector-class?view=msvc-170
+    vector<int> coinDenominations;
+
+    // Get the coin denominations in increasing order from the user
+    cout << "Enter the coin denominations in increasing order:\n";
+    for (int i = 0; i < numCoins; i++) {
+        int coin;
+        cin >> coin;
+        //use a ready made function from the vector library to insert values in the array (coinDenominations) from the user
+        coinDenominations.push_back(coin);
+    }
+
+    int targetAmount;
+
+    // Get the target amount from the user
+    cout << "Enter the target amount: ";
+    cin >> targetAmount;
+
+    // Find and print the minimum number of coins needed for the target amount, if there any
+    int result = minCoins(coinDenominations, targetAmount, numCoins);
+
+    if (result < 0) {
+        cout << "No valid combination of coins to make change for the given amount." << endl;
+    }
+    else {
+        cout << "Minimum number of coins needed: " << result << endl;
+    }
+
+    return 0;
+}
